@@ -108,6 +108,7 @@ jobs:
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.10.0
         with:
+          token: ${{ secrets.GIT_TOKEN }}
           target: 'http://testphp.vulnweb.com/'
 
       - name: Check Report OWASP ZAP Scan
