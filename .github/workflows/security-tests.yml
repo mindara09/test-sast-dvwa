@@ -27,10 +27,12 @@ jobs:
           unzip dependency-check-7.0.4-release.zip -d dependency-check
           pwd
           ls -la ./dependency-check/dependency-check/
+          echo "Check Project"
+          ls -la ~/
 
       - name: Run Dependency Check
         run: |
-          ./dependency-check/dependency-check/bin/dependency-check.sh --project YourProjectName --scan . --format "ALL" --failOnCVSS 7
+          ./dependency-check/dependency-check/bin/dependency-check.sh --project YourProjectName --scan ~/ --format "ALL" --failOnCVSS 7
       
       - name: Upload Dependency Check Report
         uses: actions/upload-artifact@v3
