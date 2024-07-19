@@ -97,11 +97,12 @@ jobs:
   #     - name: Run OWASP ZAP Baseline Scan
   #       run: |
   #         docker run -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-baseline.py -t http://your-application-url -r zap-report.html || true
+  # Job to run OWASP ZAP
   zap_scan:
     runs-on: ubuntu-latest
     name: owasp-zap
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -110,6 +111,7 @@ jobs:
         with:
           token: ${{ secrets.GIT_TOKEN }}
           target: 'http://testphp.vulnweb.com/'
+          cmd_options: '-a '
 
       - name: Check Report OWASP ZAP Scan
         run: |
