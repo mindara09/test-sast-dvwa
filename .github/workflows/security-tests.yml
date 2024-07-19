@@ -32,7 +32,8 @@ jobs:
 
       - name: Run Dependency Check
         run: |
-          ./dependency-check/dependency-check/bin/dependency-check.sh --project YourProjectName --scan . -o ./dependency-check/report.json --failOnCVSS 7
+          ./dependency-check/dependency-check/bin/dependency-check.sh --project YourProjectName --scan . -o ./dependency-check/ --failOnCVSS 7
+          ls -la ./dependency-check/
       
       - name: Upload Dependency Check Report
         uses: actions/upload-artifact@v3
