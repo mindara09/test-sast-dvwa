@@ -25,7 +25,8 @@ jobs:
         run: |
           curl -LO https://github.com/jeremylong/DependencyCheck/releases/download/v7.0.4/dependency-check-7.0.4-release.zip
           unzip dependency-check-7.0.4-release.zip -d dependency-check
-          ls -l dependency-check/bin
+          pwd
+          ls -la
 
       - name: Run Dependency Check
         run: |
