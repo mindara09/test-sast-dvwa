@@ -18,6 +18,7 @@ jobs:
       - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '11'
 
       - name: Install Dependency Check
@@ -28,7 +29,7 @@ jobs:
 
       - name: Run Dependency Check
         run: |
-          dependency-check --project YourProjectName --scan . --format "ALL" --failOnCVSS 7
+          dependency-check/bin/dependency-check.sh --project YourProjectName --scan . --format "ALL" --failOnCVSS 7
       
       - name: Upload Dependency Check Report
         uses: actions/upload-artifact@v3
@@ -45,6 +46,7 @@ jobs:
       - name: Install Horusec
         run: |
           curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec-install/master/scripts/install.sh | bash
+          export PATH=$PATH:/usr/local/bin
 
       - name: Run Horusec
         run: |
