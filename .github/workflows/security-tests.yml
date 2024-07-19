@@ -1,11 +1,8 @@
 # Beta 1.0
 
-name: Security Tests
+name: Static Application Security Testing
 on:
   push:
-    branches:
-      - main
-  pull_request:
     branches:
       - main
 
@@ -51,6 +48,7 @@ jobs:
           path: ./dependency-check-report/
 
   horusec:
+    needs: [dependency-check]
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
