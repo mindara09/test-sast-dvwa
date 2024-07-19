@@ -27,6 +27,7 @@ jobs:
           unzip dependency-check-7.0.4-release.zip -d dependency-check
           mv dependency-check ../dependency-check/ 
           ls -la ../
+          rm ./dependency-check-7.0.4-release.zip
 
       - name: Check Dependency Check
         run: |
