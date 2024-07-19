@@ -20,14 +20,22 @@ jobs:
         with:
           java-version: '11'
 
-      - name: Dependency Check
-        uses: dependency-check/DependencyCheck@v3.3.2
+      - name: Install Dependency Check
+        run: |
+          curl -LO https://github.com/jeremylong/DependencyCheck/releases/download/v7.0.4/dependency-check-7.0.4-release.zip
+          unzip dependency-check-7.0.4-release.zip -d dependency-check
+          export PATH=$PATH:$GITHUB_WORKSPACE/dependency-check/bin
+
+      - name: Run Dependency Check
+        run: |
+          dependency-check --project YourProjectName --scan . --format "ALL" --failOnCVSS 7
+      
+      - name: Upload Dependency Check Report
+        uses: actions/upload-artifact@v3
         with:
-          project: 'YourProjectName'
-          scan-path: '.'
-          format: 'ALL'
-          fail-on-cvss: '7'
-  
+          name: dependency-check-report
+          path: ./dependency-check-report
+
   horusec:
     runs-on: ubuntu-latest
     steps:
@@ -36,7 +44,7 @@ jobs:
       
       - name: Install Horusec
         run: |
-          curl -fsSL https://horusec.io/bin/install.sh | bash
+          curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec-install/master/scripts/install.sh | bash
 
       - name: Run Horusec
         run: |
