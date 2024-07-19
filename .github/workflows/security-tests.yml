@@ -1,5 +1,6 @@
-name: Security Tests
+# Beta 1.0
 
+name: Security Tests
 on:
   push:
     branches:
