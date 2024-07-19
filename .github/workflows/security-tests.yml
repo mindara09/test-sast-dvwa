@@ -32,7 +32,7 @@ jobs:
 
       - name: Run Dependency Check
         run: |
-          ./dependency-check/dependency-check/bin/dependency-check.sh --project YourProjectName --scan ~/ --format "ALL" --failOnCVSS 7
+          ./dependency-check/dependency-check/bin/dependency-check.sh --project YourProjectName --scan /home/runner/work/test-sast-dvwa/test-sast-dvwa --format "ALL" --failOnCVSS 7
       
       - name: Upload Dependency Check Report
         uses: actions/upload-artifact@v3
