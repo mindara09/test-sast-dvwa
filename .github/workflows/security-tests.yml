@@ -48,7 +48,7 @@ jobs:
       - name: Running Horusec Security
         run: |
           curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash -s latest
-          horusec start -p="./" -e="true" -o json -O /.horusec/horusec-report.json -D || true
+          horusec start -p="./" -e="true" -o json -O ./horusec/horusec-report.json -D || true
 
       - name: Upload Horusec Report
         uses: actions/upload-artifact@v3
