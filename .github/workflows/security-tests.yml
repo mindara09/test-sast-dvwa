@@ -38,13 +38,13 @@ jobs:
 
       - name: Run Dependency Check
         run: |
-          ./dependency-check/dependency-check/bin/dependency-check.sh --project YourProjectName --scan . --out dependency-check/ --format "ALL" --failOnCVSS 7 || true
+          ./dependency-check/dependency-check/bin/dependency-check.sh --project YourProjectName --scan . --out dependency-check/dependency-check-report/ --format "ALL" --failOnCVSS 7 || true
       
       - name: Upload Dependency Check Report
         uses: actions/upload-artifact@v3
         with:
           name: dependency-check-report
-          path: ./dependency-check/dependency-check-report
+          path: ./dependency-check/dependency-check-report/
 
   horusec:
     runs-on: ubuntu-latest
