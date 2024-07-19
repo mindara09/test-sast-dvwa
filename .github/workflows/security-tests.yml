@@ -1,68 +1,110 @@
-# Beta 1.0
-
+# Version Beta 1.0 SAST
 name: Static Application Security Testing
+
+# Trigger the workflow on pushes to the 'main' branch
 on:
   push:
     branches:
       - main
 
 jobs:
+  # Job to run Dependency Check as part of SAST (Static Application Security Testing)
   dependency-check:
     runs-on: ubuntu-latest
     steps:
+      # Step to check out the repository code
       - name: Checkout repository
         uses: actions/checkout@v3
         
+      # Step to set up JDK 11 using the 'zulu' distribution
       - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
 
+      # Step to download and unzip Dependency Check
       - name: Install Dependency Check
         run: |
           curl -LO https://github.com/jeremylong/DependencyCheck/releases/download/v7.0.4/dependency-check-7.0.4-release.zip
           unzip dependency-check-7.0.4-release.zip -d dependency-check
-          mv dependency-check ../dependency-check/ 
+          mv dependency-check ../dependency-check/
           ls -la ../
           rm ./dependency-check-7.0.4-release.zip
 
+      # Step to verify the Dependency Check installation
       - name: Check Dependency Check
         run: |
           pwd
           ls -la ../dependency-check/dependency-check/
 
+      # Step to create a directory for the Dependency Check report
       - name: Check Dependency Check Report
         run: |
           mkdir ./dependency-check-report/
           ls -la ./ | grep "dependency-check-report"
 
+      # Step to run Dependency Check and generate a report
       - name: Run Dependency Check
         run: |
           ../dependency-check/dependency-check/bin/dependency-check.sh --project YourProjectName --scan . --out dependency-check-report/ --format "ALL" --failOnCVSS 7 || true
       
+      # Step to upload the Dependency Check report as an artifact
       - name: Upload Dependency Check Report
         uses: actions/upload-artifact@v3
         with:
           name: dependency-check-report
           path: ./dependency-check-report/
 
+  # Job to run Horusec after Dependency Check completes successfully
   horusec:
     needs: [dependency-check]
     runs-on: ubuntu-latest
     steps:
+      # Step to check out the repository code
       - name: Check out code
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
+      # Step to download and install Horusec
       - name: Running Horusec Security
         run: |
           curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash -s latest
           horusec start -p="./" -e="true" -o json -O horusec-report.json -D || true
 
+      # Step to upload the Horusec report as an artifact
       - name: Upload Horusec Report
         uses: actions/upload-artifact@v3
         with:
           name: horusec-report
           path: './horusec-report.json'
+  
+  # Job to run OWASP ZAP after Horusec completes successfully
+  owasp-zap:
+    needs: [horusec]
+    runs-on: ubuntu-latest
+    steps:
+      # Step to check out the repository code
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      # Step to set up Docker
+      - name: Set up Docker
+        uses: actions/setup-docker@v1
+
+      # Step to pull the OWASP ZAP Docker image
+      - name: Pull OWASP ZAP Docker image
+        run: docker pull owasp/zap2docker-stable
+
+      # Step to run OWASP ZAP in baseline scan mode
+      - name: Run OWASP ZAP Baseline Scan
+        run: |
+          docker run -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-baseline.py -t http://testphp.vulnweb.com -r zap-report.html || true
+
+      # Step to upload the OWASP ZAP report as an artifact
+      - name: Upload OWASP ZAP Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: zap-report
+          path: ./zap-report.html
