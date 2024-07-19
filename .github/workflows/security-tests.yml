@@ -1,5 +1,5 @@
-# Version Beta 1.0 SAST
-name: Static Application Security Testing
+# Version Beta 1.0 SAST/DAST
+name: Static and Dynamic Application Security Testing
 
 # Trigger the workflow on pushes to the 'main' branch
 on:
@@ -58,12 +58,12 @@ jobs:
 
   # Job to run Horusec after Dependency Check completes successfully
   horusec:
-    needs: [dependency-check]
+    # needs: [dependency-check]
     runs-on: ubuntu-latest
     steps:
       # Step to check out the repository code
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -79,19 +79,15 @@ jobs:
         with:
           name: horusec-report
           path: './horusec-report.json'
-  
+
   # Job to run OWASP ZAP after Horusec completes successfully
   owasp-zap:
-    needs: [horusec]
+    # needs: [horusec]
     runs-on: ubuntu-latest
     steps:
       # Step to check out the repository code
       - name: Check out code
-        uses: actions/checkout@v2
-
-      # Step to set up Docker
-      - name: Set up Docker
-        uses: actions/setup-docker@v1
+        uses: actions/checkout@v3
 
       # Step to pull the OWASP ZAP Docker image
       - name: Pull OWASP ZAP Docker image
@@ -100,7 +96,7 @@ jobs:
       # Step to run OWASP ZAP in baseline scan mode
       - name: Run OWASP ZAP Baseline Scan
         run: |
-          docker run -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-baseline.py -t http://testphp.vulnweb.com -r zap-report.html || true
+          docker run -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-baseline.py -t http://your-application-url -r zap-report.html || true
 
       # Step to upload the OWASP ZAP report as an artifact
       - name: Upload OWASP ZAP Report
