@@ -25,10 +25,11 @@ jobs:
         run: |
           curl -LO https://github.com/jeremylong/DependencyCheck/releases/download/v7.0.4/dependency-check-7.0.4-release.zip
           unzip dependency-check-7.0.4-release.zip -d dependency-check
+          echo "Check Project"
           pwd
           ls -la ./dependency-check/dependency-check/
-          echo "Check Project"
-          ls -la ~/
+          mkdir ./dependency-check/dependency-check-report
+          ls -la ./dependency-check/
 
       - name: Run Dependency Check
         run: |
@@ -38,7 +39,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: dependency-check-report
-          path: ./dependency-check/
+          path: ./dependency-check/dependency-check-report
 
   horusec:
     runs-on: ubuntu-latest
