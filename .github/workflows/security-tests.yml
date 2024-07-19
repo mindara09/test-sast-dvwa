@@ -98,8 +98,9 @@ jobs:
   #       run: |
   #         docker run -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-baseline.py -t http://your-application-url -r zap-report.html || true
   zap_scan:
+    needs: [dependency-check]
     runs-on: ubuntu-latest
-    name: Scan the webapplication
+    name: owasp-zap
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -113,6 +114,6 @@ jobs:
           rules_file_name: '.zap/rules.tsv'
           cmd_options: '-a '
 
-      - name: Run OWASP ZAP Baseline Scan
+      - name: Check Report OWASP ZAP Scan
         run: |
           ls -la ./
