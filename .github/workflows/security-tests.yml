@@ -32,7 +32,7 @@ jobs:
 
       - name: Run Dependency Check
         run: |
-          ./dependency-check/dependency-check/bin/dependency-check.sh --project YourProjectName --scan . -o --format "ALL" --failOnCVSS 7 || true
+          ./dependency-check/dependency-check/bin/dependency-check.sh --project YourProjectName --scan . --out dependency-check-report/ --format "ALL" --failOnCVSS 7 || true
       
       - name: Upload Dependency Check Report
         uses: actions/upload-artifact@v3
